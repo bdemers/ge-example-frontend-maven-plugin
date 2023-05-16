@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>com.example</groupId>
+    <artifactId>ge-with-frontend-maven-plugin</artifactId>
+    <version>1.0.0-SNAPSHOT</version>
+
+    <properties>
+
+        <!-- Generic properties -->
+        <java.version>17</java.version>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+        <!-- Important for reproducible builds. Update using e.g. ./mvnw versions:set -DnewVersion=... -->
+        <project.build.outputTimestamp>2023-05-10T07:42:50Z</project.build.outputTimestamp>
+
+    </properties>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>com.github.eirslett</groupId>
+                <artifactId>frontend-maven-plugin</artifactId>
+                <version>1.12.1</version>
+                <configuration>
+                    <nodeVersion>v18.16.0</nodeVersion>
+                    <installDirectory>${project.build.directory}</installDirectory>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>install-node-and-npm</id>
+                        <goals><goal>install-node-and-npm</goal></goals>
+                        <phase>generate-resources</phase>
+                    </execution>
+                    <execution>
+                        <id>npm-install</id>
+                        <goals><goal>npm</goal></goals>
+                        <phase>generate-resources</phase>
+                        <configuration>
+                            <arguments>install</arguments>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>npm-run-build</id>
+                        <goals><goal>npm</goal></goals>
+                        <configuration>
+                            <arguments>run build</arguments>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>com.gradle</groupId>
+                    <artifactId>gradle-enterprise-maven-extension</artifactId>
+                    <configuration>
+                        <gradleEnterprise>
+                            <plugins>
+                                <plugin>
+                                    <groupId>com.github.eirslett</groupId>
+                                    <artifactId>frontend-maven-plugin</artifactId>
+
+                                    <inputs>
+<!--                                        <fileSets>-->
+<!--                                            <fileSet>-->
+<!--                                                <includes>-->
+<!--                                                    <include>package.json</include>-->
+<!--                                                </includes>-->
+<!--                                            </fileSet>-->
+<!--                                        </fileSets>-->
+                                        <ignoredProperties>
+                                            <ignore>execution</ignore>
+                                            <ignore>project</ignore>
+                                            <ignore>repositorySystemSession</ignore>
+                                            <ignore>session</ignore>
+                                            <ignore>skip</ignore>
+                                            <ignore>skipTests</ignore>
+                                        </ignoredProperties>
+                                    </inputs>
+
+                                    <executions>
+                                        <execution>
+                                            <id>install-node-and-npm</id>
+                                            <inputs>
+                                                <properties>
+                                                    <property><name>downloadRoot</name></property>
+                                                    <property><name>environmentVariables</name></property>
+                                                    <property><name>nodeVersion</name></property>
+                                                    <property><name>npmVersion</name></property>
+                                                    <property><name>serverId</name></property>
+                                                    <property><name>testFailureIgnore</name></property>
+                                                </properties>
+                                            </inputs>
+                                            <outputs>
+                                                <directories>
+                                                    <directory><name>installDirectory</name></directory>
+                                                    <directory><name>nodeDownloadRoot</name></directory>
+                                                    <directory><name>npmDownloadRoot</name></directory>
+                                                    <fileSet><name>workingDirectory</name></fileSet>
+                                                </directories>
+                                                <cacheableBecause>This plugin has CPU-bound goals with well-defined inputs and outputs</cacheableBecause>
+                                            </outputs>
+                                        </execution>
+                                        <execution>
+                                            <id>npm-install</id>
+                                            <inputs>
+                                                <fileSets>
+                                                    <fileSet><name>installDirectory</name></fileSet>
+                                                </fileSets>
+                                                <properties>
+                                                    <property><name>arguments</name></property>
+                                                    <property><name>environmentVariables</name></property>
+                                                    <property><name>npmInheritsProxyConfigFromMaven</name></property>
+                                                    <property><name>npmRegistryURL</name></property>
+                                                    <property><name>testFailureIgnore</name></property>
+                                                </properties>
+                                            </inputs>
+                                            <outputs>
+                                                <directories>
+                                                    <directory><name>workingDirectory</name></directory>
+                                                </directories>
+                                                <cacheableBecause>This plugin has CPU-bound goals with well-defined inputs and outputs</cacheableBecause>
+                                            </outputs>
+                                        </execution>
+                                        <execution>
+                                            <id>npm-run-build</id>
+                                            <inputs>
+                                                <fileSets>
+                                                    <fileSet><name>installDirectory</name></fileSet>
+                                                    <fileSet><name>workingDirectory</name></fileSet>
+                                                </fileSets>
+                                                <properties>
+                                                    <property><name>arguments</name></property>
+                                                    <property><name>environmentVariables</name></property>
+                                                    <property><name>npmInheritsProxyConfigFromMaven</name></property>
+                                                    <property><name>npmRegistryURL</name></property>
+                                                    <property><name>testFailureIgnore</name></property>
+                                                </properties>
+                                            </inputs>
+                                            <outputs>
+                                                <directories>
+                                                    <directory>
+                                                        <name>npm-build</name>
+                                                        <path>${project.build.directory}/npm-build</path>
+                                                    </directory>
+                                                </directories>
+                                                <cacheableBecause>This plugin has CPU-bound goals with well-defined inputs and outputs</cacheableBecause>
+                                            </outputs>
+                                        </execution>
+                                    </executions>
+                                </plugin>
+                            </plugins>
+                        </gradleEnterprise>
+                    </configuration>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+    </build>
+</project>
